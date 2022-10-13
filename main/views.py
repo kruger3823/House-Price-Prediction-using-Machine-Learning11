@@ -1,4 +1,9 @@
 from django.shortcuts import render,redirect
+from django.shortcuts import redirect, render
+from .forms import *
+
+
+from .models import UploadImage
 from main.models import HouseDetails
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -6,7 +11,7 @@ from accounts.models import *
 
 import pickle
 
-regressor = pickle.load(open("C:/Users/RUSHABH/Desktop/SGH_files/KC_SAVED_RANDOM_FOREST_ORIGINAL.sav", "rb"))
+#regressor = pickle.load(open("C:/Users/RUSHABH/Desktop/SGH_files/KC_SAVED_RANDOM_FOREST_ORIGINAL.sav", "rb"))
 
 import numpy as np
 
@@ -90,3 +95,31 @@ def predict1(request):
 def data(request):
     items=HouseDetails.objects.all()
     return render(request, 'main/data.html', {'items': items})
+
+
+
+
+
+def viewimage(request):
+
+    if request.method == 'POST':
+        form = UserImage(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+
+            # Getting the current instance object to display in the template
+           
+    else:
+        form = UserImage()
+            
+    context = {
+        "form": form}
+      
+    return render(request, 'viewimage.html', context)
+
+def viewplot(request):
+    patients=UploadImage.objects.all().filter()
+    return render(request,'plotview.html',{'patients':patients})
+
+
+

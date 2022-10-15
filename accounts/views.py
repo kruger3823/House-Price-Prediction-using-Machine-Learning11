@@ -17,7 +17,7 @@ def login(request):
 
         try:
             use = user.objects.get(usrname=usrname, password1=password1)
-            if use.status == "active":
+            if use.status == "inactive":
                 request.session['first_name'] = use.first_name
                 request.session['userpk'] = use.pk
                 return redirect('/')
@@ -46,6 +46,9 @@ def signup(request):
         password1 = request.POST.get('password')
         password2 = request.POST.get('cpassword')
         email = request.POST.get('email')
+        user.objects.create(first_name=first_name, last_name=last_name,
+                            email=email, usrname=usrname, password1=password1,
+                            password2=password2)
 
         try:
             # use = user.objects.get(email=email)
@@ -61,13 +64,7 @@ def signup(request):
             user.objects.create(first_name=first_name, last_name=last_name,
                                 email=email, usrname=usrname, password1=password1,
                                 password2=password2)
-            rec = [email, ]
-            subject = "Successful OTP conformation"
-            randotp = random.randint(1000, 9999)
-            message = "Your otp for successful registration is " + str(randotp)
-            email_from = settings.EMAIL_HOST_USER
-            send_mail(subject, message, email_from, rec)
-            return render(request, 'accounts/otp.html', {'randotp': randotp, 'email': email, })
+
     else:
         return render(request, 'accounts/signup.html')
 
